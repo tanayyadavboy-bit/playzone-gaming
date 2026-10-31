@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlayZone - Memory Match</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#10152d,#25134a);
+  color:white;
+  text-align:center;
+  min-height:100vh;
+  padding:25px 15px;
+}
+h1{font-size:32px;color:#a78bfa;margin-bottom:5px}
+.subtitle{color:#c4b5fd}
+.stats{
+  display:flex;justify-content:center;gap:25px;
+  margin:25px auto;font-size:16px;
+}
+.stat{
+  background:#ffffff15;padding:12px 18px;
+  border-radius:12px;
+}
+.game{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:10px;max-width:380px;margin:20px auto;
+}
+.card{
+  aspect-ratio:1;background:#6d28d9;
+  border:2px solid #a78bfa;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(25px,8vw,42px);
+  cursor:pointer;transition:transform .2s;
+  user-select:none;
+}
+.card:active{transform:scale(.94)}
+.card.open,.card.matched{background:#fff;color:#222}
+.card.matched{border-color:#4ade80}
+button{
+  background:#8b5cf6;color:white;border:0;
+  padding:13px 25px;border-radius:25px;
+  font-size:16px;font-weight:bold;cursor:pointer;
+}
+#message{margin:20px;font-size:18px;color:#86efac}
+footer{margin-top:35px;color:#a5a5b5;font-size:13px}
+</style>
+</head>
+<body>
+
+<h1>🎮 PLAYZONE</h1>
+<p class="subtitle">Memory Match Challenge</p>
+
+<div class="stats">
+  <div class="stat">Moves: <b id="moves">0</b></div>
+  <div class="stat">Time: <b id="time">0</b>s</div>
+</div>
+
+<div class="game" id="game"></div>
+
+<button onclick="startGame()">🔄 Restart Game</button>
+<div id="message"></div>
+
+<footer>PlayZone Gaming • Have Fun!</footer>
+
+<script>
+const emojis = ["🍎","🚀","🐱","⚽","🍕","🌟","🎮","🦋"];
+let cards = [];
+let first = null;
+let second = null;
+let locked = false;
+let moves = 0;
+let matched = 0;
+let seconds = 0;
+let timer = null;
+let started = false;
+
+function startGame(){
+  clearInterval(timer);
+  cards = [...emojis,...emojis].sort(()=>Math.random()-0.5);
+  first = null;
+  second = null;
+  locked = false;
+  moves = 0;
+  matched = 0;
+  seconds = 0;
+  started = false;
+
+  document.getElementById("moves").textContent = 0;
+  document.getElementById("time").textContent = 0;
+  document.getElementById("message").textContent = "";
+
+  const board = document.getElementById("game");
+  board.innerHTML = "";
+
+  cards.forEach((emoji,index)=>{
+    const card = document.createElement("div");
+    card.className = "card";
+    card.textContent = "?";
+    card.dataset.emoji = emoji;
+    card.dataset.index = index;
+    card.onclick = ()=>flipCard(card);
+    board.appendChild(card);
+  });
+}
+
+function flipCard(card){
+  if(locked || card.classList.contains("open") ||
+     card.classList.contains("matched")) return;
+
+  if(!started){
+    started = true;
+    timer = setInterval(()=>{
+      seconds++;
+      document.getElementById("time").textContent = seconds;
+    },1000);
+  }
+
+  card.textContent = card.dataset.emoji;
+  card.classList.add("open");
+
+  if(!first){
+    first = card;
+    return;
+  }
+
+  second = card;
+  moves++;
+  document.getElementById("moves").textContent = moves;
+
+  if(first.dataset.emoji === second.dataset.emoji){
+    first.classList.add("matched");
+    second.classList.add("matched");
+    first.classList.remove("open");
+    second.classList.remove("open");
+    first = null;
+    second = null;
+    matched++;
+
+    if(matched === emojis.length){
+      clearInterval(timer);
+      document.getElementById("message").textContent =
+        "🎉 Congratulations! You Won!";
+    }
+  }else{
+    locked = true;
+    setTimeout(()=>{
+      first.textContent = "?";
+      second.textContent = "?";
+      first.classList.remove("open");
+      second.classList.remove("open");
+      first = null;
+      second = null;
+      locked = false;
+    },800);
+  }
+}
+
+startGame();
+</script>
+</body>
+                             </html>
+                             
