@@ -1,167 +1,177 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PlayZone - Memory Match</title>
+<title>PLAYZONE - All Games</title>
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:linear-gradient(135deg,#10152d,#25134a);
-  color:white;
-  text-align:center;
-  min-height:100vh;
-  padding:25px 15px;
-}
-h1{font-size:32px;color:#a78bfa;margin-bottom:5px}
-.subtitle{color:#c4b5fd}
-.stats{
-  display:flex;justify-content:center;gap:25px;
-  margin:25px auto;font-size:16px;
-}
-.stat{
-  background:#ffffff15;padding:12px 18px;
-  border-radius:12px;
-}
-.game{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:10px;max-width:380px;margin:20px auto;
-}
-.card{
-  aspect-ratio:1;background:#6d28d9;
-  border:2px solid #a78bfa;border-radius:14px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:clamp(25px,8vw,42px);
-  cursor:pointer;transition:transform .2s;
-  user-select:none;
-}
-.card:active{transform:scale(.94)}
-.card.open,.card.matched{background:#fff;color:#222}
+body{margin:0;font-family:Arial,sans-serif;background:#090914;color:white}
+header{padding:20px;background:#151326;border-bottom:1px solid #39265e}
+.logo{font-size:28px;font-weight:bold;color:#c4a3ff}
+.hero{padding:45px 18px;text-align:center;background:linear-gradient(135deg,#17102c,#35166b)}
+.hero h1{font-size:34px;margin:5px}
+.hero p{color:#d3c4ef}
+input{width:90%;max-width:420px;padding:14px;border:1px solid #7652ad;border-radius:25px;background:#201832;color:white;font-size:16px}
+h2{padding:0 18px;color:#c9a8ff}
+.games{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:15px}
+.game-card{background:#191629;border:1px solid #49316c;border-radius:15px;padding:18px;text-align:center}
+.game-icon{font-size:48px}
+.game-card h3{margin:10px 0}
+.game-card p{color:#b9aecb;font-size:13px}
+button{background:#8b5cf6;color:white;border:0;border-radius:22px;padding:11px 20px;font-weight:bold;cursor:pointer}
+button:disabled{background:#514666}
+#gameArea{display:none;text-align:center;padding:20px}
+.stats{display:flex;justify-content:center;gap:25px;margin:20px}
+.stat{background:#211a34;padding:12px;border-radius:10px}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;max-width:380px;margin:20px auto}
+.card{aspect-ratio:1;background:#6d28d9;border:2px solid #a78bfa;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:clamp(25px,8vw,42px);cursor:pointer}
+.card.open,.card.matched{background:white;color:#222}
 .card.matched{border-color:#4ade80}
-button{
-  background:#8b5cf6;color:white;border:0;
-  padding:13px 25px;border-radius:25px;
-  font-size:16px;font-weight:bold;cursor:pointer;
-}
-#message{margin:20px;font-size:18px;color:#86efac}
-footer{margin-top:35px;color:#a5a5b5;font-size:13px}
+#message{color:#86efac;margin:18px}
+footer{text-align:center;padding:25px;color:#aaa;font-size:13px}
+@media(min-width:700px){.games{grid-template-columns:repeat(3,1fr);max-width:900px;margin:auto}}
 </style>
 </head>
 <body>
 
-<h1>🎮 PLAYZONE</h1>
-<p class="subtitle">Memory Match Challenge</p>
+<header><div class="logo">🎮 PLAYZONE</div></header>
 
-<div class="stats">
-  <div class="stat">Moves: <b id="moves">0</b></div>
-  <div class="stat">Time: <b id="time">0</b>s</div>
+<section class="hero" id="home">
+<h1>WELCOME TO PLAYZONE</h1>
+<p>Play Games. Have Fun. Challenge Yourself!</p>
+<input id="search" placeholder="🔍 Search your favourite game..." oninput="searchGames()">
+</section>
+
+<h2 id="gamesHeading">🔥 ALL GAMES</h2>
+
+<section class="games" id="gamesList">
+<div class="game-card" data-name="memory match">
+<div class="game-icon">🧠</div>
+<h3>Memory Match</h3>
+<p>Match all the cards and win!</p>
+<button onclick="openGame()">PLAY NOW</button>
 </div>
 
-<div class="game" id="game"></div>
+<div class="game-card" data-name="tic tac toe">
+<div class="game-icon">⭕</div>
+<h3>Tic Tac Toe</h3>
+<p>Coming Soon</p>
+<button disabled>COMING SOON</button>
+</div>
 
-<button onclick="startGame()">🔄 Restart Game</button>
+<div class="game-card" data-name="snake game">
+<div class="game-icon">🐍</div>
+<h3>Snake Game</h3>
+<p>Coming Soon</p>
+<button disabled>COMING SOON</button>
+</div>
+
+<div class="game-card" data-name="brick breaker">
+<div class="game-icon">🧱</div>
+<h3>Brick Breaker</h3>
+<p>Coming Soon</p>
+<button disabled>COMING SOON</button>
+</div>
+</section>
+
+<section id="gameArea">
+<button onclick="goHome()">← BACK TO GAMES</button>
+<h2>🧠 MEMORY MATCH</h2>
+<p>Find all matching emoji pairs!</p>
+<div class="stats">
+<div class="stat">Moves: <b id="moves">0</b></div>
+<div class="stat">Time: <b id="time">0</b>s</div>
+</div>
+<div class="board" id="board"></div>
+<button onclick="startGame()">🔄 RESTART GAME</button>
 <div id="message"></div>
+</section>
 
-<footer>PlayZone Gaming • Have Fun!</footer>
+<footer>© 2026 PLAYZONE GAMING • Have Fun!</footer>
 
 <script>
-const emojis = ["🍎","🚀","🐱","⚽","🍕","🌟","🎮","🦋"];
-let cards = [];
-let first = null;
-let second = null;
-let locked = false;
-let moves = 0;
-let matched = 0;
-let seconds = 0;
-let timer = null;
-let started = false;
+const emojis=["🍎","🚀","🐱","⚽","🍕","🌟","🎮","🦋"];
+let first=null,second=null,locked=false,moves=0,matched=0,seconds=0,timer=null,started=false;
+
+function searchGames(){
+let q=document.getElementById("search").value.toLowerCase();
+document.querySelectorAll(".game-card").forEach(card=>{
+card.style.display=card.dataset.name.includes(q)?"block":"none";
+});
+}
+
+function openGame(){
+document.getElementById("home").style.display="none";
+document.getElementById("gamesHeading").style.display="none";
+document.getElementById("gamesList").style.display="none";
+document.getElementById("gameArea").style.display="block";
+startGame();
+}
+
+function goHome(){
+clearInterval(timer);
+document.getElementById("gameArea").style.display="none";
+document.getElementById("home").style.display="block";
+document.getElementById("gamesHeading").style.display="block";
+document.getElementById("gamesList").style.display="grid";
+}
 
 function startGame(){
-  clearInterval(timer);
-  cards = [...emojis,...emojis].sort(()=>Math.random()-0.5);
-  first = null;
-  second = null;
-  locked = false;
-  moves = 0;
-  matched = 0;
-  seconds = 0;
-  started = false;
-
-  document.getElementById("moves").textContent = 0;
-  document.getElementById("time").textContent = 0;
-  document.getElementById("message").textContent = "";
-
-  const board = document.getElementById("game");
-  board.innerHTML = "";
-
-  cards.forEach((emoji,index)=>{
-    const card = document.createElement("div");
-    card.className = "card";
-    card.textContent = "?";
-    card.dataset.emoji = emoji;
-    card.dataset.index = index;
-    card.onclick = ()=>flipCard(card);
-    board.appendChild(card);
-  });
+clearInterval(timer);
+first=null;second=null;locked=false;moves=0;matched=0;seconds=0;started=false;
+document.getElementById("moves").textContent=0;
+document.getElementById("time").textContent=0;
+document.getElementById("message").textContent="";
+let deck=[...emojis,...emojis].sort(()=>Math.random()-0.5);
+let board=document.getElementById("board");
+board.innerHTML="";
+deck.forEach(emoji=>{
+let card=document.createElement("div");
+card.className="card";
+card.textContent="?";
+card.dataset.emoji=emoji;
+card.onclick=()=>flipCard(card);
+board.appendChild(card);
+});
 }
 
 function flipCard(card){
-  if(locked || card.classList.contains("open") ||
-     card.classList.contains("matched")) return;
-
-  if(!started){
-    started = true;
-    timer = setInterval(()=>{
-      seconds++;
-      document.getElementById("time").textContent = seconds;
-    },1000);
-  }
-
-  card.textContent = card.dataset.emoji;
-  card.classList.add("open");
-
-  if(!first){
-    first = card;
-    return;
-  }
-
-  second = card;
-  moves++;
-  document.getElementById("moves").textContent = moves;
-
-  if(first.dataset.emoji === second.dataset.emoji){
-    first.classList.add("matched");
-    second.classList.add("matched");
-    first.classList.remove("open");
-    second.classList.remove("open");
-    first = null;
-    second = null;
-    matched++;
-
-    if(matched === emojis.length){
-      clearInterval(timer);
-      document.getElementById("message").textContent =
-        "🎉 Congratulations! You Won!";
-    }
-  }else{
-    locked = true;
-    setTimeout(()=>{
-      first.textContent = "?";
-      second.textContent = "?";
-      first.classList.remove("open");
-      second.classList.remove("open");
-      first = null;
-      second = null;
-      locked = false;
-    },800);
-  }
+if(locked||card.classList.contains("open")||card.classList.contains("matched"))return;
+if(!started){
+started=true;
+timer=setInterval(()=>{
+seconds++;
+document.getElementById("time").textContent=seconds;
+},1000);
 }
-
-startGame();
+card.textContent=card.dataset.emoji;
+card.classList.add("open");
+if(!first){first=card;return;}
+second=card;
+moves++;
+document.getElementById("moves").textContent=moves;
+if(first.dataset.emoji===second.dataset.emoji){
+first.classList.add("matched");
+second.classList.add("matched");
+first.classList.remove("open");
+second.classList.remove("open");
+first=null;second=null;matched++;
+if(matched===emojis.length){
+clearInterval(timer);
+document.getElementById("message").textContent="🎉 Congratulations! You Won!";
+}
+}else{
+locked=true;
+setTimeout(()=>{
+first.textContent="?";
+second.textContent="?";
+first.classList.remove("open");
+second.classList.remove("open");
+first=null;second=null;locked=false;
+},800);
+}
+}
 </script>
 </body>
-                             </html>
-                             
+</html>
