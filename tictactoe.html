@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLAYZONE - Tic Tac Toe</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;
+  background:linear-gradient(135deg,#090914,#17102e);
+  color:white;font-family:Arial,sans-serif;
+  display:flex;justify-content:center;align-items:center;
+  padding:20px;
+}
+.container{text-align:center;width:100%;max-width:420px}
+h1{color:#b78cff;font-size:32px}
+p{color:#ccc}
+.status{font-size:21px;margin:22px 0;font-weight:bold}
+.board{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;margin:20px auto;max-width:330px;
+}
+.cell{
+  aspect-ratio:1;background:#241b40;
+  border:2px solid #7546b8;border-radius:14px;
+  color:white;font-size:48px;font-weight:bold;
+  cursor:pointer;
+}
+.cell.x{color:#55d9ff}
+.cell.o{color:#ff8acb}
+button.action{
+  border:0;border-radius:25px;padding:13px 24px;
+  margin:8px;background:#8b50e8;color:white;
+  font-size:16px;font-weight:bold;cursor:pointer;
+}
+button.home{background:#333}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎮 PLAYZONE</h1>
+  <h2>TIC TAC TOE</h2>
+  <p>Two Players • X vs O</p>
+  <div class="status" id="status">Player X's Turn</div>
+
+  <div class="board" id="board">
+    <button class="cell"></button><button class="cell"></button><button class="cell"></button>
+    <button class="cell"></button><button class="cell"></button><button class="cell"></button>
+    <button class="cell"></button><button class="cell"></button><button class="cell"></button>
+  </div>
+
+  <button class="action" onclick="resetGame()">New Game</button>
+  <button class="action home" onclick="location.href='index.html'">Back to Games</button>
+</div>
+
+<script>
+const cells = document.querySelectorAll(".cell");
+const statusText = document.getElementById("status");
+let currentPlayer = "X";
+let gameActive = true;
+let board = ["","","","","","","","",""];
+
+const wins = [
+ [0,1,2],[3,4,5],[6,7,8],
+ [0,3,6],[1,4,7],[2,5,8],
+ [0,4,8],[2,4,6]
+];
+
+cells.forEach((cell,index)=>{
+  cell.addEventListener("click",()=>{
+    if(board[index] !== "" || !gameActive) return;
+
+    board[index] = currentPlayer;
+    cell.textContent = currentPlayer;
+    cell.classList.add(currentPlayer.toLowerCase());
+
+    const won = wins.some(combo =>
+      combo.every(i => board[i] === currentPlayer)
+    );
+
+    if(won){
+      statusText.textContent = "🎉 Player " + currentPlayer + " Wins!";
+      gameActive = false;
+    } else if(board.every(value => value !== "")){
+      statusText.textContent = "It's a Draw!";
+      gameActive = false;
+    } else {
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      statusText.textContent = "Player " + currentPlayer + "'s Turn";
+    }
+  });
+});
+
+function resetGame(){
+  board = ["","","","","","","","",""];
+  currentPlayer = "X";
+  gameActive = true;
+  cells.forEach(cell=>{
+    cell.textContent = "";
+    cell.classList.remove("x","o");
+  });
+  statusText.textContent = "Player X's Turn";
+}
+</script>
+</body>
+  </html>
+  
