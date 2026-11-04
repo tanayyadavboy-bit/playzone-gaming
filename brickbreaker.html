@@ -70,7 +70,10 @@ let score=0,lives=3;
 let running=false,over=false;
 let animation=null;
 let left=false,right=false;
-
+let powerUps=[];
+let extraBall=false;
+let shield=false;
+ 
 function createBricks(){
  bricks=[];
  for(let r=0;r<5;r++){
@@ -110,7 +113,10 @@ function draw(){
   ctx.strokeStyle="#ffffff55";
   ctx.strokeRect(b.x,b.y,b.w,b.h);
  });
-
+powerUps.forEach(p=>{
+  ctx.font="22px Arial";
+  ctx.fillText(p.type,p.x,p.y);
+});
  ctx.fillStyle="#c084fc";
  ctx.fillRect(paddle.x,paddle.y,paddle.w,paddle.h);
 
