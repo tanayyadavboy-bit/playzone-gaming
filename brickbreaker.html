@@ -5,95 +5,109 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PLAYZONE - Brick Breaker</title>
+
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;padding:20px 12px;
- background:#090910;color:white;
- font-family:Arial,sans-serif;text-align:center;
+ margin:0;
+ background:#090014;
+ color:white;
+ font-family:Arial,sans-serif;
+ text-align:center;
 }
-h1{color:#b56cff}
-.game{
- max-width:440px;margin:auto;padding:15px;
- background:#171323;border:1px solid #7135a8;
- border-radius:18px;
+h1{color:#c084fc;margin:18px 0}
+.info{
+ display:flex;
+ justify-content:center;
+ gap:25px;
+ margin:12px;
+ font-size:17px;
 }
-.score{display:flex;justify-content:space-around;color:#d8b5ff;font-weight:bold;margin:12px}
 canvas{
- width:100%;max-width:380px;
- background:#080d13;border:2px solid #a34cff;
- border-radius:10px;display:block;margin:15px auto;
- touch-action:none;
+ background:#160b2b;
+ border:2px solid #9333ea;
+ border-radius:10px;
+ width:min(94vw,380px);
+ height:auto;
+ display:block;
+ margin:12px auto;
 }
 button{
- background:#8b35d6;color:white;border:0;
- padding:12px 18px;border-radius:9px;
- font-size:16px;font-weight:bold;margin:5px;
+ background:#9333ea;
+ color:white;
+ border:0;
+ border-radius:8px;
+ padding:12px 22px;
+ margin:6px;
+ font-size:16px;
+ cursor:pointer;
 }
-#message{color:#ffd36a;min-height:24px}
-.controls{display:flex;justify-content:center;gap:25px}
-.back{background:#333}
+.controls button{width:85px}
+#message{color:#f0abfc;min-height:24px}
 </style>
 </head>
+
 <body>
-<h1>🧱 PLAYZONE</h1>
-<p>BRICK BREAKER</p>
 
-<div class="game">
- <div class="score">
-  <span>Score: <span id="score">0</span></span>
-  <span>Lives: <span id="lives">3</span></span>
- </div>
+<h1>🎮 PLAYZONE</h1>
 
- <canvas id="board" width="380" height="440"></canvas>
- <div id="message">Press START to Play!</div>
- <button onclick="startGame()">START GAME</button>
- <button onclick="pauseGame()">PAUSE</button>
+<div class="info">
+ <span>Score: <b id="score">0</b></span>
+ <span>Lives: <b id="lives">3</b></span>
+</div>
 
- <div class="controls">
-  <button id="left">⬅️ LEFT</button>
-  <button id="right">RIGHT ➡️</button>
- </div>
- <p>Move the paddle and break all bricks!</p>
- <button class="back" onclick="location.href='index.html'">🏠 HOME</button>
+<canvas id="game" width="380" height="500"></canvas>
+
+<p id="message">Press START to play!</p>
+
+<button onclick="startGame()">START / RESTART</button>
+
+<div class="controls">
+ <button id="leftBtn">⬅ LEFT</button>
+ <button id="rightBtn">RIGHT ➡</button>
 </div>
 
 <script>
-const canvas=document.getElementById("board");
+const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
-const W=380,H=440;
 
-let paddle={x:145,y:410,w:90,h:12};
-let ball={x:190,y:390,r:8,dx:3,dy:-3};
-let bricks=[];
-let score=0,lives=3;
-let running=false,over=false;
+const W=380,H=500;
+
+let score=0;
+let lives=3;
+let running=false;
+let over=false;
 let animation=null;
+
 let left=false,right=false;
-let powerUps=[];
-let extraBall=false;
 let shield=false;
- 
+let balls=[];
+let bricks=[];
+let powerUps=[];
+
+let paddle={
+ x:145,y:465,w:90,h:12
+};
+
+function newBall(x=190,y=440,dx=3,dy=-3){
+ return {x,y,r:8,dx,dy};
+}
+
 function createBricks(){
  bricks=[];
- for(let r=0;r<5;r++){
-  for(let c=0;c<7;c++){
+ powerUps=[];
+
+ for(let row=0;row<5;row++){
+  for(let col=0;col<7;col++){
    bricks.push({
-    x:12+c*51,y:45+r*25,
-    w:44,h:17,alive:true,
-    color:["#b34dff","#8b35d6","#e04cff","#673ab7","#a855f7"][r]
+    x:12+col*51,
+    y:45+row*27,
+    w:44,
+    h:17,
+    alive:true
    });
   }
  }
-}
-
-function reset(){
- score=0;lives=3;over=false;
- paddle.x=145;
- ball={x:190,y:390,r:8,dx:3,dy:-3};
- createBricks();
- updateScore();
- draw();
 }
 
 function updateScore(){
@@ -101,51 +115,72 @@ function updateScore(){
  document.getElementById("lives").textContent=lives;
 }
 
+function reset(){
+ score=0;
+ lives=3;
+ shield=false;
+ balls=[newBall()];
+ paddle.x=145;
+ createBricks();
+ updateScore();
+}
+
 function draw(){
  ctx.clearRect(0,0,W,H);
- ctx.fillStyle="#080d13";
- ctx.fillRect(0,0,W,H);
 
- bricks.forEach(b=>{
+ // Bricks
+ bricks.forEach((b,i)=>{
   if(!b.alive)return;
-  ctx.fillStyle=b.color;
+
+  ctx.fillStyle=["#a855f7","#9333ea","#7e22ce","#c084fc","#6b21a8"][Math.floor(i/7)];
   ctx.fillRect(b.x,b.y,b.w,b.h);
-  ctx.strokeStyle="#ffffff55";
-  ctx.strokeRect(b.x,b.y,b.w,b.h);
  });
-powerUps.forEach(p=>{
-  ctx.font="22px Arial";
-  ctx.fillText(p.type,p.x,p.y);
-});
+
+ // Paddle
  ctx.fillStyle="#c084fc";
  ctx.fillRect(paddle.x,paddle.y,paddle.w,paddle.h);
 
- ctx.beginPath();
- ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);
- ctx.fillStyle="#ffffff";
- ctx.fill();
+ // Balls
+ balls.forEach(ball=>{
+  ctx.beginPath();
+  ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);
+  ctx.fillStyle="#ffffff";
+  ctx.fill();
+ });
+
+ // Power-up boxes
+ powerUps.forEach(p=>{
+  ctx.font="22px Arial";
+  ctx.fillText(p.type,p.x,p.y);
+ });
+
+ // Shield indicator
+ if(shield){
+  ctx.fillStyle="#38bdf8";
+  ctx.font="14px Arial";
+  ctx.fillText("🛡️ SHIELD ACTIVE",125,25);
+ }
 }
 
 function startGame(){
- if(over)reset();
- if(running)return;
+ if(animation)cancelAnimationFrame(animation);
+
+ reset();
+ over=false;
  running=true;
- document.getElementById("message").textContent="Game Running!";
+
+ document.getElementById("message").textContent="Game Started!";
  loop();
 }
 
-function pauseGame(){
- if(!running)return;
+function endGame(win){
  running=false;
- cancelAnimationFrame(animation);
- document.getElementById("message").textContent="Game Paused";
-}
+ over=true;
 
-function endGame(won){
- running=false;over=true;
- cancelAnimationFrame(animation);
  document.getElementById("message").textContent=
- won?"🏆 YOU WIN! Score: "+score:"GAME OVER! Score: "+score;
+  win?"🏆 YOU WIN!":"GAME OVER!";
+
+ draw();
 }
 
 function loop(){
@@ -153,80 +188,165 @@ function loop(){
 
  if(left)paddle.x-=6;
  if(right)paddle.x+=6;
+
  paddle.x=Math.max(0,Math.min(W-paddle.w,paddle.x));
 
- ball.x+=ball.dx;
- ball.y+=ball.dy;
+ // Ball movement and collisions
+ for(let ball of balls){
 
- if(ball.x<ball.r||ball.x>W-ball.r)ball.dx*=-1;
- if(ball.y<ball.r)ball.dy*=-1;
+  ball.x+=ball.dx;
+  ball.y+=ball.dy;
 
- if(ball.y+ball.r>=paddle.y &&
- ball.x>=paddle.x && ball.x<=paddle.x+paddle.w &&
- ball.dy>0){
-  ball.dy=-Math.abs(ball.dy);
-  ball.dx=(ball.x-(paddle.x+paddle.w/2))/12;
- }
+  if(ball.x<ball.r||ball.x>W-ball.r)
+   ball.dx*=-1;
 
- for(let b of bricks){
-  if(b.alive &&
-   ball.x+ball.r>b.x && ball.x-ball.r<b.x+b.w &&
-   ball.y+ball.r>b.y && ball.y-ball.r<b.y+b.h){
+  if(ball.y<ball.r)
+   ball.dy*=-1;
+
+  // Paddle collision
+  if(ball.y+ball.r>=paddle.y &&
+     ball.x>=paddle.x &&
+     ball.x<=paddle.x+paddle.w &&
+     ball.dy>0){
+
+   ball.dy=-Math.abs(ball.dy);
+   ball.dx=(ball.x-(paddle.x+paddle.w/2))/12;
+  }
+
+  // Brick collision
+  for(let b of bricks){
+   if(!b.alive)continue;
+
+   if(ball.x+ball.r>b.x &&
+      ball.x-ball.r<b.x+b.w &&
+      ball.y+ball.r>b.y &&
+      ball.y-ball.r<b.y+b.h){
+
     b.alive=false;
     ball.dy*=-1;
     score+=10;
     updateScore();
+
+    // Random power-up
+    if(Math.random()<0.35){
+     let types=["❤️","⚡","🛡️"];
+
+     powerUps.push({
+      x:b.x+b.w/2,
+      y:b.y,
+      type:types[Math.floor(Math.random()*3)]
+     });
+    }
+
     break;
+   }
   }
  }
 
- if(bricks.every(b=>!b.alive)){
-  draw();endGame(true);return;
+ // Power-up movement and collection
+ for(let i=powerUps.length-1;i>=0;i--){
+  let p=powerUps[i];
+  p.y+=2;
+
+  if(p.y+15>=paddle.y &&
+     p.x>=paddle.x &&
+     p.x<=paddle.x+paddle.w){
+
+   if(p.type==="❤️"){
+    lives++;
+    updateScore();
+    document.getElementById("message").textContent="❤️ EXTRA LIFE!";
+   }
+
+   if(p.type==="⚡"){
+    if(balls.length<2){
+     let b=balls[0];
+     balls.push(newBall(b.x,b.y,-b.dx,-Math.abs(b.dy)));
+    }
+    document.getElementById("message").textContent="⚡ DOUBLE BALL!";
+   }
+
+   if(p.type==="🛡️"){
+    shield=true;
+    document.getElementById("message").textContent="🛡️ SHIELD ACTIVE!";
+   }
+
+   powerUps.splice(i,1);
+  }
+  else if(p.y>H){
+   powerUps.splice(i,1);
+  }
  }
 
- if(ball.y>H){
-  lives--;updateScore();
-  if(lives<=0){draw();endGame(false);return;}
-  ball={x:190,y:390,r:8,dx:3,dy:-3};
-  paddle.x=145;
+ // Remove balls that fall below screen
+ let lost=balls.filter(b=>b.y>H);
+ balls=balls.filter(b=>b.y<=H);
+
+ // Shield protects one lost ball
+ if(lost.length>0){
+  if(shield){
+   shield=false;
+   balls.push(newBall());
+   document.getElementById("message").textContent="🛡️ SHIELD SAVED YOU!";
+  }
+  else if(balls.length===0){
+   lives--;
+   updateScore();
+
+   if(lives<=0){
+    draw();
+    endGame(false);
+    return;
+   }
+
+   balls.push(newBall());
+   paddle.x=145;
+  }
+ }
+
+ // Win check
+ if(bricks.every(b=>!b.alive)){
+  draw();
+  endGame(true);
+  return;
  }
 
  draw();
  animation=requestAnimationFrame(loop);
 }
 
-function hold(btn,direction){
- btn.addEventListener("pointerdown",e=>{
-  e.preventDefault();
-  if(direction==="left")left=true;
-  else right=true;
- });
- ["pointerup","pointerleave","pointercancel"].forEach(ev=>{
-  btn.addEventListener(ev,()=>{
-   if(direction==="left")left=false;
-   else right=false;
-  });
- });
-}
-hold(document.getElementById("left"),"left");
-hold(document.getElementById("right"),"right");
-
-canvas.addEventListener("pointermove",e=>{
- const rect=canvas.getBoundingClientRect();
- const x=(e.clientX-rect.left)*W/rect.width;
- paddle.x=Math.max(0,Math.min(W-paddle.w,x-paddle.w/2));
-});
-
+// Keyboard controls
 document.addEventListener("keydown",e=>{
  if(e.key==="ArrowLeft")left=true;
  if(e.key==="ArrowRight")right=true;
 });
+
 document.addEventListener("keyup",e=>{
  if(e.key==="ArrowLeft")left=false;
  if(e.key==="ArrowRight")right=false;
 });
 
-reset();
+// Mobile controls
+function holdButton(id,direction){
+ let btn=document.getElementById(id);
+
+ btn.addEventListener("pointerdown",e=>{
+  e.preventDefault();
+  direction(true);
+ });
+
+ ["pointerup","pointerleave","pointercancel"].forEach(event=>{
+  btn.addEventListener(event,()=>direction(false));
+ });
+}
+
+holdButton("leftBtn",v=>left=v);
+holdButton("rightBtn",v=>right=v);
+
+createBricks();
+draw();
+updateScore();
 </script>
+
 </body>
 </html>
