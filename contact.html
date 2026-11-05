@@ -204,19 +204,21 @@ button,a{
 
   <div class="contact-item">
    ✉️ <b>Email:</b><br>
-   your-email@example.com
+   <a href="mailto:danishyadav331@gmail.com">
+    danishyadav331@gmail.com
+   </a>
   </div>
 
   <div class="contact-item">
    📸 <b>Instagram:</b><br>
-   <a href="https://instagram.com/yourusername" target="_blank">
+   <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer">
     @yourusername
    </a>
   </div>
 
   <div class="contact-item">
    ▶️ <b>YouTube:</b><br>
-   <a href="https://youtube.com/@yourchannel" target="_blank">
+   <a href="https://youtube.com/@yourchannel" target="_blank" rel="noopener noreferrer">
     PLAYZONE YouTube
    </a>
   </div>
@@ -239,8 +241,8 @@ button,a{
  <h2>❤️ Follow Us</h2>
  <p>Stay connected for more games and updates!</p>
  <p style="margin-top:15px">
-  <a href="https://instagram.com/yourusername" target="_blank">Instagram</a>
-  <a href="https://youtube.com/@yourchannel" target="_blank">YouTube</a>
+  <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer">Instagram</a>
+  <a href="https://youtube.com/@yourchannel" target="_blank" rel="noopener noreferrer">YouTube</a>
  </p>
 </section>
 
@@ -255,9 +257,9 @@ button,a{
 document.getElementById("contactForm").addEventListener("submit",function(e){
  e.preventDefault();
 
- const name=document.getElementById("name").value;
- const email=document.getElementById("email").value;
- const message=document.getElementById("message").value;
+ const name=document.getElementById("name").value.trim();
+ const email=document.getElementById("email").value.trim();
+ const message=document.getElementById("message").value.trim();
 
  const subject=encodeURIComponent("PLAYZONE Contact Message");
  const body=encodeURIComponent(
@@ -265,7 +267,7 @@ document.getElementById("contactForm").addEventListener("submit",function(e){
  );
 
  window.location.href=
-  "mailto:your-email@example.com?subject="+subject+"&body="+body;
+  "mailto:danishyadav331@gmail.com?subject="+subject+"&body="+body;
 });
 
 document.addEventListener("contextmenu",function(e){
