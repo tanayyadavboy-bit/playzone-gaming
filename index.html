@@ -15,16 +15,17 @@
  box-sizing:border-box;
  margin:0;
  padding:0;
+ user-select:none;
+ -webkit-user-select:none;
+ -webkit-touch-callout:none;
 }
+
+html{scroll-behavior:smooth}
 
 body{
  font-family:Arial,sans-serif;
  background:#090914;
  color:white;
-}
-
-html{
- scroll-behavior:smooth;
 }
 
 header{
@@ -58,9 +59,7 @@ nav a{
  font-size:14px;
 }
 
-nav a:hover{
- color:#c084fc;
-}
+nav a:hover{color:#c084fc}
 
 .hero{
  text-align:center;
@@ -74,9 +73,7 @@ nav a:hover{
  color:white;
 }
 
-.hero h1 span{
- color:#c084fc;
-}
+.hero h1 span{color:#c084fc}
 
 .hero p{
  color:#ddd0f5;
@@ -95,9 +92,7 @@ nav a:hover{
  cursor:pointer;
 }
 
-.hero button:hover{
- background:#7e22ce;
-}
+.hero button:hover{background:#7e22ce}
 
 .search-area{
  padding:30px 15px 10px;
@@ -114,11 +109,11 @@ nav a:hover{
  color:white;
  font-size:15px;
  outline:none;
+ user-select:text;
+ -webkit-user-select:text;
 }
 
-.search-area input:focus{
- border-color:#c084fc;
-}
+.search-area input:focus{border-color:#c084fc}
 
 .section-title{
  text-align:center;
@@ -188,9 +183,7 @@ nav a:hover{
  cursor:pointer;
 }
 
-.play-btn:hover{
- background:#6d28d9;
-}
+.play-btn:hover{background:#6d28d9}
 
 #noResults{
  display:none;
@@ -236,6 +229,7 @@ nav a:hover{
  justify-content:center;
  font-size:clamp(25px,8vw,42px);
  cursor:pointer;
+ touch-action:manipulation;
 }
 
 .card.open,.card.matched{
@@ -243,9 +237,7 @@ nav a:hover{
  color:#222;
 }
 
-.card.matched{
- border-color:#4ade80;
-}
+.card.matched{border-color:#4ade80}
 
 #message{
  color:#86efac;
@@ -284,29 +276,25 @@ footer a{
  text-decoration:none;
 }
 
+button,a{
+ -webkit-tap-highlight-color:transparent;
+}
+
+button{touch-action:manipulation}
+
 @media(min-width:700px){
- .games{
-  grid-template-columns:repeat(4,1fr);
- }
+ .games{grid-template-columns:repeat(4,1fr)}
 }
 
 @media(max-width:450px){
- nav{
-  gap:13px;
- }
- nav a{
-  font-size:12px;
- }
+ nav{gap:13px}
+ nav a{font-size:12px}
  .games{
   gap:12px;
   padding:20px 12px;
  }
- .game-card{
-  padding:20px 8px;
- }
- .game-icon{
-  font-size:43px;
- }
+ .game-card{padding:20px 8px}
+ .game-icon{font-size:43px}
 }
 </style>
 </head>
@@ -405,7 +393,7 @@ footer a{
  </p>
 </section>
 
-<footer id="contact">
+<footer>
  <p>© 2026 PLAYZONE GAMING • Have Fun!</p>
  <p style="margin-top:12px">
   <a href="#home">Back to Top ↑</a>
@@ -413,6 +401,8 @@ footer a{
 </footer>
 
 <script>
+document.addEventListener("contextmenu",e=>e.preventDefault());
+
 const emojis=["🍎","🚀","🐱","⚽","🍕","🌟","🎮","🦋"];
 
 let first=null;
@@ -422,6 +412,7 @@ let moves=0;
 let matched=0;
 let seconds=0;
 let timer=null;
+let flipTimeout=null;
 let started=false;
 
 function searchGames(){
@@ -450,11 +441,21 @@ function openGame(){
  document.getElementById("about").style.display="none";
  document.querySelector("footer").style.display="none";
  document.getElementById("gameArea").style.display="block";
+
  startGame();
+ window.scrollTo(0,0);
 }
 
 function goHome(){
  clearInterval(timer);
+ clearTimeout(flipTimeout);
+
+ timer=null;
+ flipTimeout=null;
+ started=false;
+ locked=false;
+ first=null;
+ second=null;
 
  document.getElementById("gameArea").style.display="none";
  document.getElementById("home").style.display="block";
@@ -466,12 +467,15 @@ function goHome(){
  document.getElementById("about").style.display="block";
  document.querySelector("footer").style.display="block";
 
- startGame();
- clearInterval(timer);
+ window.scrollTo(0,0);
 }
 
 function startGame(){
  clearInterval(timer);
+ clearTimeout(flipTimeout);
+
+ timer=null;
+ flipTimeout=null;
 
  first=null;
  second=null;
@@ -537,6 +541,8 @@ function flipCard(card){
 
   if(matched===emojis.length){
    clearInterval(timer);
+   timer=null;
+   started=false;
    document.getElementById("message").textContent=
     "🎉 Congratulations! You Won!";
   }
@@ -544,7 +550,9 @@ function flipCard(card){
  }else{
   locked=true;
 
-  setTimeout(()=>{
+  flipTimeout=setTimeout(()=>{
+   if(!first||!second)return;
+
    first.textContent="?";
    second.textContent="?";
 
@@ -554,6 +562,7 @@ function flipCard(card){
    first=null;
    second=null;
    locked=false;
+   flipTimeout=null;
   },800);
  }
 }
