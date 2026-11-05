@@ -7,15 +7,24 @@
 <title>PLAYZONE - Brick Breaker</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+ box-sizing:border-box;
+ user-select:none;
+ -webkit-user-select:none;
+ -webkit-touch-callout:none;
+}
+
 body{
  margin:0;
  background:#090014;
  color:white;
  font-family:Arial,sans-serif;
  text-align:center;
+ touch-action:pan-y;
 }
+
 h1{color:#c084fc;margin:18px 0}
+
 .info{
  display:flex;
  justify-content:center;
@@ -23,6 +32,7 @@ h1{color:#c084fc;margin:18px 0}
  margin:12px;
  font-size:17px;
 }
+
 canvas{
  background:#160b2b;
  border:2px solid #9333ea;
@@ -31,7 +41,9 @@ canvas{
  height:auto;
  display:block;
  margin:12px auto;
+ touch-action:none;
 }
+
 button{
  background:#9333ea;
  color:white;
@@ -41,8 +53,12 @@ button{
  margin:6px;
  font-size:16px;
  cursor:pointer;
+ touch-action:manipulation;
+ -webkit-tap-highlight-color:transparent;
 }
+
 .controls button{width:85px}
+
 #message{color:#f0abfc;min-height:24px}
 </style>
 </head>
@@ -62,12 +78,15 @@ button{
 
 <button onclick="startGame()">START / RESTART</button>
 <button onclick="window.location.href='index.html'">🏠 HOME</button>
+
 <div class="controls">
  <button id="leftBtn">⬅ LEFT</button>
  <button id="rightBtn">RIGHT ➡</button>
 </div>
 
 <script>
+document.addEventListener("contextmenu",e=>e.preventDefault());
+
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 
@@ -85,9 +104,7 @@ let balls=[];
 let bricks=[];
 let powerUps=[];
 
-let paddle={
- x:145,y:465,w:90,h:12
-};
+let paddle={x:145,y:465,w:90,h:12};
 
 function newBall(x=190,y=440,dx=3,dy=-3){
  return {x,y,r:8,dx,dy};
@@ -121,6 +138,8 @@ function reset(){
  shield=false;
  balls=[newBall()];
  paddle.x=145;
+ left=false;
+ right=false;
  createBricks();
  updateScore();
 }
@@ -128,7 +147,6 @@ function reset(){
 function draw(){
  ctx.clearRect(0,0,W,H);
 
- // Bricks
  bricks.forEach((b,i)=>{
   if(!b.alive)return;
 
@@ -136,11 +154,9 @@ function draw(){
   ctx.fillRect(b.x,b.y,b.w,b.h);
  });
 
- // Paddle
  ctx.fillStyle="#c084fc";
  ctx.fillRect(paddle.x,paddle.y,paddle.w,paddle.h);
 
- // Balls
  balls.forEach(ball=>{
   ctx.beginPath();
   ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);
@@ -148,13 +164,11 @@ function draw(){
   ctx.fill();
  });
 
- // Power-up boxes
  powerUps.forEach(p=>{
   ctx.font="22px Arial";
   ctx.fillText(p.type,p.x,p.y);
  });
 
- // Shield indicator
  if(shield){
   ctx.fillStyle="#38bdf8";
   ctx.font="14px Arial";
@@ -191,7 +205,6 @@ function loop(){
 
  paddle.x=Math.max(0,Math.min(W-paddle.w,paddle.x));
 
- // Ball movement and collisions
  for(let ball of balls){
 
   ball.x+=ball.dx;
@@ -203,7 +216,6 @@ function loop(){
   if(ball.y<ball.r)
    ball.dy*=-1;
 
-  // Paddle collision
   if(ball.y+ball.r>=paddle.y &&
      ball.x>=paddle.x &&
      ball.x<=paddle.x+paddle.w &&
@@ -213,7 +225,6 @@ function loop(){
    ball.dx=(ball.x-(paddle.x+paddle.w/2))/12;
   }
 
-  // Brick collision
   for(let b of bricks){
    if(!b.alive)continue;
 
@@ -227,7 +238,6 @@ function loop(){
     score+=10;
     updateScore();
 
-    // Random power-up
     if(Math.random()<0.35){
      let types=["❤️","⚡","🛡️"];
 
@@ -243,7 +253,6 @@ function loop(){
   }
  }
 
- // Power-up movement and collection
  for(let i=powerUps.length-1;i>=0;i--){
   let p=powerUps[i];
   p.y+=2;
@@ -278,11 +287,9 @@ function loop(){
   }
  }
 
- // Remove balls that fall below screen
  let lost=balls.filter(b=>b.y>H);
  balls=balls.filter(b=>b.y<=H);
 
- // Shield protects one lost ball
  if(lost.length>0){
   if(shield){
    shield=false;
@@ -304,7 +311,6 @@ function loop(){
   }
  }
 
- // Win check
  if(bricks.every(b=>!b.alive)){
   draw();
   endGame(true);
@@ -317,8 +323,14 @@ function loop(){
 
 // Keyboard controls
 document.addEventListener("keydown",e=>{
- if(e.key==="ArrowLeft")left=true;
- if(e.key==="ArrowRight")right=true;
+ if(e.key==="ArrowLeft"){
+  left=true;
+  e.preventDefault();
+ }
+ if(e.key==="ArrowRight"){
+  right=true;
+  e.preventDefault();
+ }
 });
 
 document.addEventListener("keyup",e=>{
@@ -328,15 +340,18 @@ document.addEventListener("keyup",e=>{
 
 // Mobile controls
 function holdButton(id,direction){
- let btn=document.getElementById(id);
+ const btn=document.getElementById(id);
 
  btn.addEventListener("pointerdown",e=>{
   e.preventDefault();
+  btn.setPointerCapture(e.pointerId);
   direction(true);
  });
 
- ["pointerup","pointerleave","pointercancel"].forEach(event=>{
-  btn.addEventListener(event,()=>direction(false));
+ ["pointerup","pointerleave","pointercancel","lostpointercapture"].forEach(event=>{
+  btn.addEventListener(event,()=>{
+   direction(false);
+  });
  });
 }
 
