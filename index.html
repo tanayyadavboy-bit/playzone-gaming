@@ -1,181 +1,563 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="jgEcqa8Uvg9x1liL_sKGdYJ5mCHEdKfRE3SjRVnR0_M" />
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PLAYZONE - All Games</title>
+
+<meta name="google-site-verification" content="jgEcqa8Uvg9x1liL_sKGdYJ5mCHEdKfRE3SjRVnR0_M">
+
+<title>PLAYZONE - Free Online Games</title>
+<meta name="description" content="Welcome to PLAYZONE! Play free online games including Snake, Memory Match, Tic Tac Toe and Brick Breaker.">
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#090914;color:white}
-header{padding:20px;background:#151326;border-bottom:1px solid #39265e}
-.logo{font-size:28px;font-weight:bold;color:#c4a3ff}
-.hero{padding:45px 18px;text-align:center;background:linear-gradient(135deg,#17102c,#35166b)}
-.hero h1{font-size:34px;margin:5px}
-.hero p{color:#d3c4ef}
-input{width:90%;max-width:420px;padding:14px;border:1px solid #7652ad;border-radius:25px;background:#201832;color:white;font-size:16px}
-h2{padding:0 18px;color:#c9a8ff}
-.games{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:15px}
-.game-card{background:#191629;border:1px solid #49316c;border-radius:15px;padding:18px;text-align:center}
-.game-icon{font-size:48px}
-.game-card h3{margin:10px 0}
-.game-card p{color:#b9aecb;font-size:13px}
-button{background:#8b5cf6;color:white;border:0;border-radius:22px;padding:11px 20px;font-weight:bold;cursor:pointer}
-button:disabled{background:#514666}
-#gameArea{display:none;text-align:center;padding:20px}
-.stats{display:flex;justify-content:center;gap:25px;margin:20px}
-.stat{background:#211a34;padding:12px;border-radius:10px}
-.board{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;max-width:380px;margin:20px auto}
-.card{aspect-ratio:1;background:#6d28d9;border:2px solid #a78bfa;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:clamp(25px,8vw,42px);cursor:pointer}
-.card.open,.card.matched{background:white;color:#222}
-.card.matched{border-color:#4ade80}
-#message{color:#86efac;margin:18px}
-footer{text-align:center;padding:25px;color:#aaa;font-size:13px}
-@media(min-width:700px){.games{grid-template-columns:repeat(3,1fr);max-width:900px;margin:auto}}
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+}
+
+body{
+ font-family:Arial,sans-serif;
+ background:#090914;
+ color:white;
+}
+
+html{
+ scroll-behavior:smooth;
+}
+
+header{
+ background:#111020;
+ border-bottom:1px solid #39265e;
+ padding:14px 6%;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:15px;
+}
+
+.logo img{
+ width:55px;
+ height:55px;
+ border-radius:50%;
+ object-fit:cover;
+}
+
+nav{
+ display:flex;
+ gap:22px;
+ align-items:center;
+}
+
+nav a{
+ color:#ddd0f5;
+ text-decoration:none;
+ font-weight:bold;
+ font-size:14px;
+}
+
+nav a:hover{
+ color:#c084fc;
+}
+
+.hero{
+ text-align:center;
+ padding:75px 15px;
+ background:linear-gradient(135deg,#17102c,#35166b,#17102c);
+}
+
+.hero h1{
+ font-size:clamp(32px,6vw,52px);
+ margin-bottom:15px;
+ color:white;
+}
+
+.hero h1 span{
+ color:#c084fc;
+}
+
+.hero p{
+ color:#ddd0f5;
+ font-size:17px;
+ margin-bottom:25px;
+}
+
+.hero button{
+ background:#a855f7;
+ color:white;
+ border:0;
+ padding:14px 30px;
+ border-radius:30px;
+ font-weight:bold;
+ font-size:16px;
+ cursor:pointer;
+}
+
+.hero button:hover{
+ background:#7e22ce;
+}
+
+.search-area{
+ padding:30px 15px 10px;
+ text-align:center;
+}
+
+.search-area input{
+ width:90%;
+ max-width:450px;
+ padding:15px 20px;
+ border:1px solid #7652ad;
+ border-radius:30px;
+ background:#201832;
+ color:white;
+ font-size:15px;
+ outline:none;
+}
+
+.search-area input:focus{
+ border-color:#c084fc;
+}
+
+.section-title{
+ text-align:center;
+ margin:35px 10px 10px;
+ color:#d8b4fe;
+ font-size:27px;
+}
+
+.section-subtitle{
+ text-align:center;
+ color:#aaa0bb;
+ margin:10px;
+ font-size:14px;
+}
+
+.games{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:18px;
+ padding:25px 6%;
+ max-width:1100px;
+ margin:auto;
+}
+
+.game-card{
+ background:#191629;
+ border:1px solid #49316c;
+ border-radius:17px;
+ padding:25px 12px;
+ text-align:center;
+ transition:0.25s;
+}
+
+.game-card:hover{
+ transform:translateY(-5px);
+ border-color:#c084fc;
+ box-shadow:0 8px 25px #7e22ce33;
+}
+
+.game-icon{
+ font-size:55px;
+ margin-bottom:12px;
+}
+
+.game-card h3{
+ margin-bottom:10px;
+ font-size:19px;
+}
+
+.game-card p{
+ color:#b9aecb;
+ font-size:13px;
+ min-height:32px;
+ margin-bottom:17px;
+}
+
+.play-btn{
+ display:inline-block;
+ background:#8b5cf6;
+ color:white;
+ text-decoration:none;
+ border:0;
+ border-radius:25px;
+ padding:11px 24px;
+ font-weight:bold;
+ font-size:13px;
+ cursor:pointer;
+}
+
+.play-btn:hover{
+ background:#6d28d9;
+}
+
+#noResults{
+ display:none;
+ text-align:center;
+ color:#c4b5fd;
+ padding:30px;
+}
+
+#gameArea{
+ display:none;
+ text-align:center;
+ padding:30px 15px;
+}
+
+.stats{
+ display:flex;
+ justify-content:center;
+ gap:15px;
+ margin:20px;
+}
+
+.stat{
+ background:#211a34;
+ padding:12px 20px;
+ border-radius:10px;
+}
+
+.board{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:9px;
+ max-width:380px;
+ margin:20px auto;
+}
+
+.card{
+ aspect-ratio:1;
+ background:#6d28d9;
+ border:2px solid #a78bfa;
+ border-radius:12px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:clamp(25px,8vw,42px);
+ cursor:pointer;
+}
+
+.card.open,.card.matched{
+ background:white;
+ color:#222;
+}
+
+.card.matched{
+ border-color:#4ade80;
+}
+
+#message{
+ color:#86efac;
+ margin:18px;
+}
+
+.about{
+ text-align:center;
+ padding:45px 20px;
+ background:#111020;
+ margin-top:35px;
+}
+
+.about h2{
+ color:#d8b4fe;
+ margin-bottom:15px;
+}
+
+.about p{
+ color:#b9aecb;
+ line-height:1.7;
+ max-width:600px;
+ margin:auto;
+}
+
+footer{
+ text-align:center;
+ padding:25px 15px;
+ color:#aaa;
+ font-size:13px;
+ border-top:1px solid #39265e;
+}
+
+footer a{
+ color:#c084fc;
+ text-decoration:none;
+}
+
+@media(min-width:700px){
+ .games{
+  grid-template-columns:repeat(4,1fr);
+ }
+}
+
+@media(max-width:450px){
+ nav{
+  gap:13px;
+ }
+ nav a{
+  font-size:12px;
+ }
+ .games{
+  gap:12px;
+  padding:20px 12px;
+ }
+ .game-card{
+  padding:20px 8px;
+ }
+ .game-icon{
+  font-size:43px;
+ }
+}
 </style>
 </head>
+
 <body>
 
 <header>
-  <div class="logo">
-    <img src="file_0000000027e08208a9d3396747cc9436.png" alt="PLAYZONE Logo" style="width:64px;height:64px;object-fit:cover;border-radius:50%;">
-  </div>
+ <div class="logo">
+  <img src="file_0000000027e08208a9d3396747cc9436.png" alt="PLAYZONE Logo">
+ </div>
+
+ <nav>
+  <a href="#home">HOME</a>
+  <a href="#games">GAMES</a>
+  <a href="#about">ABOUT</a>
+  <a href="#contact">CONTACT</a>
+ </nav>
 </header>
 
 <section class="hero" id="home">
-<h1>WELCOME TO PLAYZONE</h1>
-<p>Play Games. Have Fun. Challenge Yourself!</p>
-<input id="search" placeholder="🔍 Search your favourite game..." oninput="searchGames()">
+ <h1>WELCOME TO <span>PLAYZONE</span></h1>
+ <p>Play Games. Have Fun. Challenge Yourself!</p>
+ <button onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">
+  EXPLORE GAMES
+ </button>
 </section>
 
-<h2 id="gamesHeading">🔥 ALL GAMES</h2>
+<div class="search-area">
+ <input
+  id="search"
+  placeholder="🔍 Search your favourite game..."
+  oninput="searchGames()"
+ >
+</div>
+
+<h2 class="section-title" id="games">🔥 ALL GAMES</h2>
+<p class="section-subtitle">Choose your favourite game and start playing!</p>
 
 <section class="games" id="gamesList">
-<div class="game-card" data-name="memory match">
-<div class="game-icon">🧠</div>
-<h3>Memory Match</h3>
-<p>Match all the cards and win!</p>
-<button onclick="openGame()">PLAY NOW</button>
-</div>
 
-<div class="game-card" data-name="tic tac toe">
-<div class="game-icon">⭕</div>
-<h3>Tic Tac Toe</h3>
-<p>Play with a friend!</p>
-<button onclick="location.href='tictactoe.html'">PLAY NOW</button>
-</div>
+ <div class="game-card" data-name="memory match">
+  <div class="game-icon">🧠</div>
+  <h3>Memory Match</h3>
+  <p>Match all the cards and win!</p>
+  <button class="play-btn" onclick="openGame()">PLAY NOW</button>
+ </div>
 
-<div class="game-card" data-name="snake game">
-<div class="game-icon">🐍</div>
-<h3>Snake Game</h3>
-<p>Eat food and grow!</p>
-<button onclick="location.href='snake.html'">PLAY NOW</button>
+ <div class="game-card" data-name="tic tac toe">
+  <div class="game-icon">⭕</div>
+  <h3>Tic Tac Toe</h3>
+  <p>Play with a friend!</p>
+  <a class="play-btn" href="tictactoe.html">PLAY NOW</a>
+ </div>
 
-<div class="game-card" data-name="brick breaker">
-<div class="game-icon">🧱</div>
-<h3>Brick Breaker</h3>
-<p>Break all the bricks!</p>
-<button onclick="location.href='brickbreaker.html'">PLAY NOW</button>
-</div>
+ <div class="game-card" data-name="snake game">
+  <div class="game-icon">🐍</div>
+  <h3>Snake Game</h3>
+  <p>Eat food and grow!</p>
+  <a class="play-btn" href="snake.html">PLAY NOW</a>
+ </div>
+
+ <div class="game-card" data-name="brick breaker">
+  <div class="game-icon">🧱</div>
+  <h3>Brick Breaker</h3>
+  <p>Break all the bricks!</p>
+  <a class="play-btn" href="brickbreaker.html">PLAY NOW</a>
+ </div>
+
 </section>
+
+<p id="noResults">No games found. Try another search!</p>
 
 <section id="gameArea">
-<button onclick="goHome()">← BACK TO GAMES</button>
-<h2>🧠 MEMORY MATCH</h2>
-<p>Find all matching emoji pairs!</p>
-<div class="stats">
-<div class="stat">Moves: <b id="moves">0</b></div>
-<div class="stat">Time: <b id="time">0</b>s</div>
-</div>
-<div class="board" id="board"></div>
-<button onclick="startGame()">🔄 RESTART GAME</button>
-<div id="message"></div>
+ <button class="play-btn" onclick="goHome()">← BACK TO GAMES</button>
+
+ <h2 class="section-title">🧠 MEMORY MATCH</h2>
+ <p>Find all matching emoji pairs!</p>
+
+ <div class="stats">
+  <div class="stat">Moves: <b id="moves">0</b></div>
+  <div class="stat">Time: <b id="time">0</b>s</div>
+ </div>
+
+ <div class="board" id="board"></div>
+
+ <button class="play-btn" onclick="startGame()">🔄 RESTART GAME</button>
+ <div id="message"></div>
 </section>
 
-<footer>© 2026 PLAYZONE GAMING • Have Fun!</footer>
+<section class="about" id="about">
+ <h2>ABOUT PLAYZONE</h2>
+ <p>
+  Welcome to PLAYZONE, your gaming destination!
+  Enjoy fun and exciting games, challenge yourself
+  and have a great time playing.
+ </p>
+</section>
+
+<footer id="contact">
+ <p>© 2026 PLAYZONE GAMING • Have Fun!</p>
+ <p style="margin-top:12px">
+  <a href="#home">Back to Top ↑</a>
+ </p>
+</footer>
 
 <script>
 const emojis=["🍎","🚀","🐱","⚽","🍕","🌟","🎮","🦋"];
-let first=null,second=null,locked=false,moves=0,matched=0,seconds=0,timer=null,started=false;
+
+let first=null;
+let second=null;
+let locked=false;
+let moves=0;
+let matched=0;
+let seconds=0;
+let timer=null;
+let started=false;
 
 function searchGames(){
-let q=document.getElementById("search").value.toLowerCase();
-document.querySelectorAll(".game-card").forEach(card=>{
-card.style.display=card.dataset.name.includes(q)?"block":"none";
-});
+ let q=document.getElementById("search").value.toLowerCase();
+ let cards=document.querySelectorAll(".game-card");
+ let found=0;
+
+ cards.forEach(card=>{
+  let show=card.dataset.name.includes(q);
+  card.style.display=show?"block":"none";
+  if(show)found++;
+ });
+
+ document.getElementById("noResults").style.display=
+  found===0?"block":"none";
 }
 
 function openGame(){
-document.getElementById("home").style.display="none";
-document.getElementById("gamesHeading").style.display="none";
-document.getElementById("gamesList").style.display="none";
-document.getElementById("gameArea").style.display="block";
-startGame();
+ document.getElementById("home").style.display="none";
+ document.querySelector("header").style.display="none";
+ document.querySelector(".search-area").style.display="none";
+ document.getElementById("games").style.display="none";
+ document.querySelector(".section-subtitle").style.display="none";
+ document.getElementById("gamesList").style.display="none";
+ document.getElementById("noResults").style.display="none";
+ document.getElementById("about").style.display="none";
+ document.querySelector("footer").style.display="none";
+ document.getElementById("gameArea").style.display="block";
+ startGame();
 }
 
 function goHome(){
-clearInterval(timer);
-document.getElementById("gameArea").style.display="none";
-document.getElementById("home").style.display="block";
-document.getElementById("gamesHeading").style.display="block";
-document.getElementById("gamesList").style.display="grid";
+ clearInterval(timer);
+
+ document.getElementById("gameArea").style.display="none";
+ document.getElementById("home").style.display="block";
+ document.querySelector("header").style.display="flex";
+ document.querySelector(".search-area").style.display="block";
+ document.getElementById("games").style.display="block";
+ document.querySelector(".section-subtitle").style.display="block";
+ document.getElementById("gamesList").style.display="grid";
+ document.getElementById("about").style.display="block";
+ document.querySelector("footer").style.display="block";
+
+ startGame();
+ clearInterval(timer);
 }
 
 function startGame(){
-clearInterval(timer);
-first=null;second=null;locked=false;moves=0;matched=0;seconds=0;started=false;
-document.getElementById("moves").textContent=0;
-document.getElementById("time").textContent=0;
-document.getElementById("message").textContent="";
-let deck=[...emojis,...emojis].sort(()=>Math.random()-0.5);
-let board=document.getElementById("board");
-board.innerHTML="";
-deck.forEach(emoji=>{
-let card=document.createElement("div");
-card.className="card";
-card.textContent="?";
-card.dataset.emoji=emoji;
-card.onclick=()=>flipCard(card);
-board.appendChild(card);
-});
+ clearInterval(timer);
+
+ first=null;
+ second=null;
+ locked=false;
+ moves=0;
+ matched=0;
+ seconds=0;
+ started=false;
+
+ document.getElementById("moves").textContent=0;
+ document.getElementById("time").textContent=0;
+ document.getElementById("message").textContent="";
+
+ let deck=[...emojis,...emojis].sort(()=>Math.random()-0.5);
+ let board=document.getElementById("board");
+
+ board.innerHTML="";
+
+ deck.forEach(emoji=>{
+  let card=document.createElement("div");
+  card.className="card";
+  card.textContent="?";
+  card.dataset.emoji=emoji;
+  card.onclick=()=>flipCard(card);
+  board.appendChild(card);
+ });
 }
 
 function flipCard(card){
-if(locked||card.classList.contains("open")||card.classList.contains("matched"))return;
-if(!started){
-started=true;
-timer=setInterval(()=>{
-seconds++;
-document.getElementById("time").textContent=seconds;
-},1000);
-}
-card.textContent=card.dataset.emoji;
-card.classList.add("open");
-if(!first){first=card;return;}
-second=card;
-moves++;
-document.getElementById("moves").textContent=moves;
-if(first.dataset.emoji===second.dataset.emoji){
-first.classList.add("matched");
-second.classList.add("matched");
-first.classList.remove("open");
-second.classList.remove("open");
-first=null;second=null;matched++;
-if(matched===emojis.length){
-clearInterval(timer);
-document.getElementById("message").textContent="🎉 Congratulations! You Won!";
-}
-}else{
-locked=true;
-setTimeout(()=>{
-first.textContent="?";
-second.textContent="?";
-first.classList.remove("open");
-second.classList.remove("open");
-first=null;second=null;locked=false;
-},800);
-}
+ if(locked||card.classList.contains("open")||
+    card.classList.contains("matched"))return;
+
+ if(!started){
+  started=true;
+  timer=setInterval(()=>{
+   seconds++;
+   document.getElementById("time").textContent=seconds;
+  },1000);
+ }
+
+ card.textContent=card.dataset.emoji;
+ card.classList.add("open");
+
+ if(!first){
+  first=card;
+  return;
+ }
+
+ second=card;
+ moves++;
+ document.getElementById("moves").textContent=moves;
+
+ if(first.dataset.emoji===second.dataset.emoji){
+  first.classList.add("matched");
+  second.classList.add("matched");
+
+  first.classList.remove("open");
+  second.classList.remove("open");
+
+  first=null;
+  second=null;
+  matched++;
+
+  if(matched===emojis.length){
+   clearInterval(timer);
+   document.getElementById("message").textContent=
+    "🎉 Congratulations! You Won!";
+  }
+
+ }else{
+  locked=true;
+
+  setTimeout(()=>{
+   first.textContent="?";
+   second.textContent="?";
+
+   first.classList.remove("open");
+   second.classList.remove("open");
+
+   first=null;
+   second=null;
+   locked=false;
+  },800);
+ }
 }
 </script>
+
 </body>
 </html>
