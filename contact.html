@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us - PLAYZONE</title>
+<meta name="description" content="Contact PLAYZONE for questions and suggestions.">
+
+<style>
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+}
+
+html{scroll-behavior:smooth;}
+
+body{
+ font-family:Arial,sans-serif;
+ background:#090914;
+ color:white;
+}
+
+header{
+ background:#111020;
+ border-bottom:1px solid #39265e;
+ padding:14px 6%;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:15px;
+}
+
+.logo{
+ color:#c084fc;
+ font-size:25px;
+ font-weight:bold;
+}
+
+nav{
+ display:flex;
+ gap:20px;
+}
+
+nav a{
+ color:#ddd0f5;
+ text-decoration:none;
+ font-weight:bold;
+ font-size:14px;
+}
+
+nav a:hover{color:#c084fc;}
+
+.hero{
+ text-align:center;
+ padding:65px 15px;
+ background:linear-gradient(135deg,#17102c,#35166b,#17102c);
+}
+
+.hero .icon{font-size:55px;}
+
+.hero h1{
+ font-size:clamp(32px,6vw,48px);
+ margin:12px 0;
+}
+
+.hero h1 span{color:#c084fc;}
+
+.hero p{color:#ddd0f5;}
+
+.contact-box{
+ max-width:900px;
+ margin:40px auto;
+ padding:25px;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:30px;
+ background:#191629;
+ border:1px solid #49316c;
+ border-radius:18px;
+}
+
+h2{
+ color:#d8b4fe;
+ margin-bottom:22px;
+}
+
+.contact-item{
+ margin:25px 0;
+ color:#ddd0f5;
+ line-height:1.8;
+}
+
+.contact-item a{
+ color:#c084fc;
+ text-decoration:none;
+}
+
+input,textarea{
+ width:100%;
+ padding:14px;
+ margin-bottom:13px;
+ background:#201832;
+ color:white;
+ border:1px solid #7652ad;
+ border-radius:10px;
+ font-size:15px;
+ outline:none;
+}
+
+textarea{
+ min-height:120px;
+ resize:vertical;
+}
+
+button{
+ width:100%;
+ padding:14px;
+ border:0;
+ border-radius:25px;
+ background:#8b5cf6;
+ color:white;
+ font-size:15px;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+button:hover{background:#6d28d9;}
+
+.social{
+ text-align:center;
+ padding:20px 15px 45px;
+}
+
+.social a{
+ display:inline-block;
+ margin:8px;
+ padding:12px 22px;
+ background:#211a34;
+ border:1px solid #7652ad;
+ border-radius:25px;
+ color:#d8b4fe;
+ text-decoration:none;
+}
+
+footer{
+ text-align:center;
+ padding:25px;
+ border-top:1px solid #39265e;
+ color:#aaa;
+}
+
+footer a{
+ color:#c084fc;
+ text-decoration:none;
+}
+
+button,a,input,textarea{
+ -webkit-tap-highlight-color:transparent;
+}
+
+button,a{
+ -webkit-user-select:none;
+ user-select:none;
+ -webkit-touch-callout:none;
+}
+
+@media(max-width:600px){
+ .contact-box{
+  grid-template-columns:1fr;
+  margin:25px 12px;
+  padding:20px;
+ }
+ nav{gap:13px;}
+ nav a{font-size:12px;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">🎮 PLAYZONE</div>
+ <nav>
+  <a href="index.html">HOME</a>
+  <a href="index.html#games">GAMES</a>
+  <a href="index.html#about">ABOUT</a>
+  <a href="contact.html">CONTACT</a>
+ </nav>
+</header>
+
+<section class="hero">
+ <div class="icon">✉️</div>
+ <h1>CONTACT <span>US</span></h1>
+ <p>Have any questions? Feel free to reach out to us!</p>
+</section>
+
+<section class="contact-box">
+
+ <div>
+  <h2>✈️ Get in Touch</h2>
+
+  <div class="contact-item">
+   ✉️ <b>Email:</b><br>
+   your-email@example.com
+  </div>
+
+  <div class="contact-item">
+   📸 <b>Instagram:</b><br>
+   <a href="https://instagram.com/yourusername" target="_blank">
+    @yourusername
+   </a>
+  </div>
+
+  <div class="contact-item">
+   ▶️ <b>YouTube:</b><br>
+   <a href="https://youtube.com/@yourchannel" target="_blank">
+    PLAYZONE YouTube
+   </a>
+  </div>
+ </div>
+
+ <div>
+  <h2>💬 Send a Message</h2>
+
+  <form id="contactForm">
+   <input id="name" type="text" placeholder="Your Name" required>
+   <input id="email" type="email" placeholder="Your Email" required>
+   <textarea id="message" placeholder="Your Message..." required></textarea>
+   <button type="submit">✈️ Send Message</button>
+  </form>
+ </div>
+
+</section>
+
+<section class="social">
+ <h2>❤️ Follow Us</h2>
+ <p>Stay connected for more games and updates!</p>
+ <p style="margin-top:15px">
+  <a href="https://instagram.com/yourusername" target="_blank">Instagram</a>
+  <a href="https://youtube.com/@yourchannel" target="_blank">YouTube</a>
+ </p>
+</section>
+
+<footer>
+ <p>© 2026 PLAYZONE GAMING • Have Fun!</p>
+ <p style="margin-top:12px">
+  <a href="index.html">Back to Home ↑</a>
+ </p>
+</footer>
+
+<script>
+document.getElementById("contactForm").addEventListener("submit",function(e){
+ e.preventDefault();
+
+ const name=document.getElementById("name").value;
+ const email=document.getElementById("email").value;
+ const message=document.getElementById("message").value;
+
+ const subject=encodeURIComponent("PLAYZONE Contact Message");
+ const body=encodeURIComponent(
+  "Name: "+name+"\nEmail: "+email+"\n\nMessage:\n"+message
+ );
+
+ window.location.href=
+  "mailto:your-email@example.com?subject="+subject+"&body="+body;
+});
+
+document.addEventListener("contextmenu",function(e){
+ if(e.target.closest("button,a")){
+  e.preventDefault();
+ }
+});
+</script>
+
+</body>
+</html>
